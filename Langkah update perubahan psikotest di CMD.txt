@@ -1,0 +1,5 @@
+1. Klik kanan terminal di index/folder file tersebut
+2. Untuk melihat perubahan git status
+3. Untuk menambahkan perubahan git add .
+4. Untuk perubahan git. commit -m "perubahan kedua"
+5. git push origin master
