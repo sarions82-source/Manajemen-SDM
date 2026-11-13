@@ -1,2 +1,0 @@
-# Manajemen-SDM
-Alat Psikotest
