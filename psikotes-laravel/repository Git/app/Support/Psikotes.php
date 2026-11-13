@@ -19,9 +19,11 @@ class Psikotes
     private $key;
     private $requireKey;
     private $cur = '';
+    private $allow = [];
 
-    public function __construct(PDO $pdo, $setupKey = '', $requireKey = false)
+    public function __construct(PDO $pdo, $setupKey = '', $requireKey = false, $allow = [])
     {
+        $this->allow = array_values(array_map('strtolower', array_filter((array) $allow, 'is_string')));
         $this->pdo = $pdo;
         $this->key = (string) $setupKey;
         $this->requireKey = (bool) $requireKey;
@@ -70,6 +72,12 @@ class Psikotes
             return self::ALAT;
         }
         return array_values(array_intersect(self::ALAT, array_filter(explode(',', (string) $csv))));
+    }
+
+    /** Daftar nama staf yang diizinkan. Bila daftar kosong, tidak ada pembatasan. */
+    private function diizinkan($u)
+    {
+        return $this->allow === [] || in_array(strtolower((string) $u), $this->allow, true);
     }
 
     /** Nomor induk alumni pemilik token sesi alumni yang sah, atau null. */
@@ -157,6 +165,9 @@ class Psikotes
             [$tk, time()]
         )->fetch(PDO::FETCH_ASSOC);
         if (!$r) {
+            return [null, ['ok' => false, 'err' => 'auth']];
+        }
+        if (!$this->diizinkan($r['username'])) {
             return [null, ['ok' => false, 'err' => 'auth']];
         }
         if ((int) $r['must_change'] === 1 && !in_array($this->cur, ['me', 'chpw'], true)) {
@@ -293,6 +304,8 @@ class Psikotes
 
         // ---- pendaftaran mandiri: menunggu persetujuan Super Admin ----
         if ($a === 'register') {
+            // Pendaftaran mandiri ditutup: akun hanya dibuat Super Admin lewat Kelola pengguna.
+            return ['ok' => false, 'err' => 'tutup'];
             if ((int) $this->q('SELECT COUNT(*) FROM users')->fetchColumn() === 0) {
                 return ['ok' => false, 'err' => 'belum'];
             }
@@ -301,6 +314,9 @@ class Psikotes
             }
             $this->hit('reg:' . $ip);
             $u = strtolower(trim((string) ($in['u'] ?? '')));
+            if (!$this->diizinkan($u)) {
+                return ['ok' => false, 'err' => 'daftar'];
+            }
             $n = mb_substr(trim((string) ($in['n'] ?? '')), 0, 60);
             $p = (string) ($in['p'] ?? '');
             $r = (($in['r'] ?? '') === 'admin') ? 'admin' : 'employee';
@@ -343,6 +359,9 @@ class Psikotes
                 return ['ok' => false, 'err' => 'kunci'];
             }
             $u = strtolower(trim((string) ($in['u'] ?? '')));
+            if (!$this->diizinkan($u)) {
+                return ['ok' => false, 'err' => 'daftar'];
+            }
             $n = mb_substr(trim((string) ($in['n'] ?? '')), 0, 60);
             $p = (string) ($in['p'] ?? '');
             if (!preg_match(self::UN, $u)) {
@@ -407,7 +426,7 @@ class Psikotes
             if ((int) $f['pending'] === 1) {
                 return ['ok' => false, 'err' => 'pending'];
             }
-            if ((int) $f['active'] !== 1 || $f['role'] !== $role) {
+            if ((int) $f['active'] !== 1 || $f['role'] !== $role || !$this->diizinkan($u)) {
                 return $gagal();
             }
             $this->q('DELETE FROM attempts WHERE k = ?', ['login:u:' . $u]);
@@ -602,6 +621,9 @@ class Psikotes
             }
             $was = $this->q('SELECT * FROM users WHERE username = ?', [$nu])->fetch(PDO::FETCH_ASSOC);
             if (!$was) {
+                if (!$this->diizinkan($nu)) {
+                    return ['ok' => false, 'err' => 'daftar'];
+                }
                 if (strlen($p) < 8) {
                     return ['ok' => false, 'err' => 'pw'];
                 }

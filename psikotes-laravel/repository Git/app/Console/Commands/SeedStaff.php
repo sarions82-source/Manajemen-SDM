@@ -26,6 +26,7 @@ class SeedStaff extends Command
         }
         $pdo = DB::connection()->getPdo();
         (new Psikotes($pdo))->ensureSchema();
+        $allow = array_map('strtolower', (array) config('psikotes.staff_allow', []));
         $baru = 0;
         $lewat = 0;
         foreach (preg_split('/\r\n|\r|\n/', (string) file_get_contents($path)) as $i => $line) {
@@ -39,6 +40,11 @@ class SeedStaff extends Command
             $p = $c[2] ?? '';
             if (!preg_match('/^[a-z0-9._-]{3,30}$/', $u) || $n === '' || strlen($p) < 8) {
                 $this->warn('Baris ' . ($i + 1) . ' dilewati (format salah).');
+                $lewat++;
+                continue;
+            }
+            if ($allow && !in_array($u, $allow, true)) {
+                $this->warn($u . ' tidak ada di daftar staf yang diizinkan (config/psikotes.php), dilewati.');
                 $lewat++;
                 continue;
             }

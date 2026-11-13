@@ -12,7 +12,7 @@ class ApiController extends Controller
     {
         try {
             $pdo = DB::connection()->getPdo();
-            $service = new Psikotes($pdo, (string) config('psikotes.setup_key', ''), app()->environment('production'));
+            $service = new Psikotes($pdo, (string) config('psikotes.setup_key', ''), app()->environment('production'), (array) config('psikotes.staff_allow', []));
             $service->ensureSchema();
             $data = $service->handle(
                 (string) $request->query('a', ''),

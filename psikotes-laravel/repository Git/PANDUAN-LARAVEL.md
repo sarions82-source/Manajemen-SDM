@@ -126,3 +126,9 @@ Gunakan `--role=admin` atau `--role=employee` untuk peran lain. Akun yang sudah 
 ## Alat tes yang boleh dibagikan
 
 Super Admin otomatis boleh membagikan semua alat tes. Admin dan Employee baru belum diberi satu pun: menu "Bagikan tes" mereka kosong sampai Super Admin mencentang alat tes di Kelola pengguna, tombol Ubah, bagian "Alat tes yang boleh dibagikan". Pembatasan ini mengatur tampilan menu bagikan, bukan memblokir server: format link (`#dpk`) bersifat umum, jadi orang yang sudah tahu formatnya tetap bisa menulis link sendiri.
+
+## Pembatasan akses staf
+
+Hanya nama pengguna di `staff_allow` pada `config/psikotes.php` yang bisa mendaftar, dibuat, atau login sebagai staf. Akun lama yang namanya tidak ada di daftar tidak bisa login lagi. Menambah orang baru berarti menambahkan namanya ke daftar itu di server. Hak cipta dijelaskan di `HAK-CIPTA.txt`.
+
+Pendaftaran mandiri dari halaman login sudah ditutup. Akun staf hanya dibuat oleh Super Admin yang sudah login (Kelola pengguna) atau lewat perintah `psikotes:seed-staff`. Tombol Register hanya muncul di layar pertama kali, untuk membuat Super Admin pertama saat database masih kosong.
