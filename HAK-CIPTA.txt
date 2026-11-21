@@ -1,0 +1,11 @@
+HAK CIPTA
+
+Aplikasi Psikotes (DISC, PAPI Kostick, Kraepelin)
+Hak cipta (c) 2023 Alumni Universitas Teknologi Surabaya (UTS)
+Fakultas Magister Manajemen Sumber Daya Manusia (M.M)
+
+Seluruh kode, tampilan, dan hasil psikotes dalam aplikasi ini adalah milik Alumni Universitas Teknologi Surabaya (UTS).
+
+Aplikasi ini hanya boleh dipakai oleh pengguna yang terdaftar dalam daftar staf yang diizinkan (config/psikotes.php, kunci staff_allow). Dilarang menyalin, memodifikasi, memasang di server lain, mendistribusikan, atau menghapus pembatasan akses dan pemberitahuan hak cipta ini tanpa izin tertulis dari pemilik.
+
+Catatan: berkas ini adalah pernyataan hak cipta, bukan nasihat hukum. Untuk perlindungan hukum yang kuat, pertimbangkan mencatatkan ciptaan ke DJKI (Direktorat Jenderal Kekayaan Intelektual) dan menyiapkan perjanjian penggunaan dengan pihak yang diberi akses.
