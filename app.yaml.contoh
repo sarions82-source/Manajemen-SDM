@@ -1,0 +1,17 @@
+# Contoh konfigurasi Wasmer Edge dengan MySQL. Ganti name dan owner, lalu sesuaikan dengan app.yaml Anda.
+kind: wasmer.io/App.v0
+name: manajemen-sdm
+owner: AKUN-WASMER-ANDA
+package: .
+capabilities:
+  database:
+    engine: mysql
+locality:
+  regions:
+    - fr-roub1        # database hanya tersedia di wilayah ini; aplikasi dengan database harus 1 wilayah
+env:
+  DB_CONNECTION: mysql   # opsional: otomatis mysql bila DB_HOST dari Wasmer ada
+  # STAFF_ALLOW: "nama.baru1,nama.baru2"   # tambahan username staf; atau "*" untuk tanpa batas
+  APP_ENV: production
+  APP_DEBUG: "false"
+  # SETUP_KEY dan APP_KEY simpan sebagai secret Wasmer, bukan di berkas ini.
